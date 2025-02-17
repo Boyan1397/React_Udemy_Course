@@ -12,7 +12,7 @@ const data = [
       "novels",
       "literature",
     ],
-    hasMovieAdaptation: true,
+    hasMovieAdaptation: false,
     pages: 1216,
     translations: {
       spanish: "El señor de los anillos",
@@ -142,3 +142,149 @@ function getBooks() {
 function getBook(id) {
   return data.find((d) => d.id === id);
 }
+
+const books = getBooks();
+
+// destructuring
+/*
+const book = getBook(3);
+const { author, title, genres, pages, publicationDate, hasMovieAdaptation } =
+  book;
+
+console.log(title);
+console.log(author);
+
+const [first, ...others] = genres;
+console.log(first);
+console.log(others);
+
+let newGenres = [...genres, "your grandmas umbrella"];
+console.log(newGenres);
+
+// we can update and create new properties while the obj is spreaded !
+
+let newBook = {
+  ...book,
+  // We can change existing data with the spread
+  title: "Goat Movie",
+  author: "Boyan",
+  // we can add new data
+  newdata: "HAHAHAH",
+};
+
+// TERNARY
+let pageRange =
+  pages > 200 ? "Pages are more than 200" : "pages are less than 200";
+
+// Simple arrow function
+let getYear = (someString) => someString.split("-")[0];
+console.log(getYear(publicationDate));
+
+//Circuiting
+// && operator
+// if its true it returns the message if not it returns false
+let exampleCrcuiting = true && "its true";
+let exampleCrcuiting2 = false && "nothing";
+let hasAdaptation = hasMovieAdaptation && "yes it has";
+console.log(hasAdaptation);
+
+// || operator
+// if its false it returns message else it returns true
+let hasMovieAdaptation2 = false || "example doesnt have ";
+console.log(hasMovieAdaptation2);
+
+//Optional chaining
+function getAllReviews(book) {
+  let goodreads = book.reviews?.goodreads?.reviewsCount ?? 0;
+  let librarything = book.reviews?.librarything?.reviewsCount ?? 0;
+  return goodreads + librarything;
+}
+
+console.log(getAllReviews(book))
+*/
+// MAPPING
+const numbers = [1, 2, 3, 4, 5];
+let mappedNums = numbers.map((el) => el * 2);
+console.log(mappedNums);
+
+const titles = books.map((book) => book.title);
+console.log(titles);
+
+function getAllReviews(book) {
+  let goodreads = book.reviews?.goodreads?.reviewsCount ?? 0;
+  let librarything = book.reviews?.librarything?.reviewsCount ?? 0;
+  return goodreads + librarything;
+}
+
+const esentialData = books.map((book) => ({
+  title: book.title,
+  author: book.author,
+  reviews: getAllReviews(book),
+}));
+
+// FILTER
+const longBooksWithAdaptation = books
+  .filter((book) => book.pages >= 500)
+  .filter((book) => book.hasMovieAdaptation);
+console.log(longBooksWithAdaptation);
+
+const adventureBooks = books
+  .filter((book) => book.genres.includes("adventure"))
+  .map((book) => book.title);
+console.log(adventureBooks);
+
+// REDUCE
+const allPages = books.reduce((sum, book) => sum + book.pages, 0);
+console.log(allPages);
+
+//SORT
+let someNums = [3, 14, 1, 6, 8];
+let sortedArr = someNums.slice().sort((a, b) => a - b);
+console.log(sortedArr);
+
+const sortedBooks = books.slice().sort((a, b) => a.pages - b.pages);
+
+// IMMUTABLE ARRAYS !!!
+// ADDING
+let newBook = {
+  id: 7,
+  title: "The Godfather",
+  pages: 4444,
+  genres: ["drama", "action"],
+};
+
+const addedBook = [...books, newBook];
+// DELETING
+const deletedBook = addedBook.filter((book) => book.id !== 3);
+
+// UPDATING !!!!
+const updatedBooks = deletedBook.map((book) =>
+  book.id === 1 ? { ...book, title: "Lord of Pizzas" } : book
+);
+
+for (el of updatedBooks) {
+  console.log(el);
+}
+
+// Promises
+fetch("https://jsonplaceholder.typicode.com/todos/1")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+
+// Async await
+
+let someLink = "https://jsonplaceholder.typicode.com/todos/1";
+
+async function getData(link) {
+  let response = await fetch(link);
+
+  if (!response.ok) {
+    throw new Error("Network error try again");
+  }
+
+  let data = await response.json();
+
+  console.log(data);
+}
+
+getData(someLink);
